@@ -1,0 +1,18 @@
+server {
+        listen 80;
+        server_name app-dev.wtransnet.com;
+
+        #root /mnt/nfs/www;
+
+        location /data          {  alias  /mnt/nfs/v4/app-data; }
+        location /logoest       {  alias  /mnt/nfs/v3/logoest; }
+        location /comprofile    {  alias  /mnt/nfs/v3/comprofile; }
+        location /bolsas        {  alias  /mnt/nfs/v3/bolsas; }
+        location /alm           {  alias  /mnt/nfs/v3/alm; }
+        location /startpage     {  alias  /mnt/nfs/v3/startpage; }
+        location /qapmark       {  alias  /mnt/nfs/v3/qapmark; }
+
+
+        access_log /var/log/nginx/app.wtransnet.com.access.log;
+        error_log /var/log/nginx/app.wtransnet.com.error.log;
+}

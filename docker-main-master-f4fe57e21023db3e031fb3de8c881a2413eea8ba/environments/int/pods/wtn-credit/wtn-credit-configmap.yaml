@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wtn-credit-configmap
+data:
+#  APP_CONFIG_DIR: "/usr/local/jetty/webapps-config"
+  DATASOURCE_USERNAME: "appcredit"

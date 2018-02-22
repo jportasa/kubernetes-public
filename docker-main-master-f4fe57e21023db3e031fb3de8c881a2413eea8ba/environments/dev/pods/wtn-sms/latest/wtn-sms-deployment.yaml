@@ -1,0 +1,65 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wtn-sms
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wtn-sms
+    spec:   
+        initContainers:
+        - name: postgres-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 postgres 5432 </dev/null; do echo waiting for postgres UP; sleep 1; done;']
+        - name: redis-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 redis 6379 </dev/null; do echo waiting for redis UP; sleep 1; done;']
+        - name: rabbitmq-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 rabbitmq 5672 </dev/null; do echo waiting for rabbitmq UP; sleep 1; done;']
+        containers:
+        - name: wtn-sms
+          image: registry.wtransnet.local:5000/jetty9-5/wtn-sms:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: env-configmap
+            - configMapRef:
+                name: wtn-sms-env-specific-configmap
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+          - mountPath: /usr/local/jetty/webapps-config
+            name: wtn-sms-properties-configmap
+          - mountPath: /usr/local/jetty/resources
+            name: wtn-sms-resources-configmap
+        volumes:
+          - name: wtn-sms-properties-configmap
+            configMap:
+              name: wtn-sms-properties-configmap
+              items:
+              - key: auth-application.properties
+                path: auth-application.properties
+              - key: auth-db-application.properties
+                path: auth-db-application.properties
+              - key: auth-queues.properties
+                path: auth-queues.properties
+              - key: environment.properties
+                path: environment.properties
+              - key: rabbit.properties
+                path: rabbit.properties
+          - name: wtn-sms-resources-configmap
+            configMap:
+              name: wtn-sms-resources-configmap
+              items:
+              - key: logback.xml
+                path: logback.xml
+              - key: log4j.properties
+                path: log4j.properties
+              - key: jetty-logging.properties
+                path: jetty-logging.properties
+        imagePullSecrets:
+        - name: registrypullsecret
+

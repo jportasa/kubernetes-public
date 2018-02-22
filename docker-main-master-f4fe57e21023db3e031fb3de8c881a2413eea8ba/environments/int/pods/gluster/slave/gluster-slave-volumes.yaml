@@ -1,0 +1,131 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-gluster-slave-config
+  labels:
+    etiqueta: pv-gluster-slave-config
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  iscsi:
+    targetPortal: "192.168.6.81:3260"
+    iqn: "iqn.2001-05.com.equallogic:0-8a0906-ce47a7c03-3b47010cd08593e3-int-pv-gluster-slave-config"
+    lun: 0
+    fsType: "ext4"
+    readOnly: false
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-gluster-slave-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-gluster-slave-config
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-gluster-slave-data
+  labels:
+    etiqueta: pv-gluster-slave-data
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  iscsi:
+    targetPortal: "192.168.6.81:3260"
+    iqn: "iqn.2001-05.com.equallogic:0-8a0906-d197a7c03-3fe7010cd0b593e3-int-pv-gluster-slave-data"
+    lun: 0
+    fsType: "ext4"
+    readOnly: false
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-gluster-slave-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-gluster-slave-data
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-gluster-slave-etc
+  labels:
+    etiqueta: pv-gluster-slave-etc
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  iscsi:
+    targetPortal: "192.168.6.81:3260"
+    iqn: "iqn.2001-05.com.equallogic:0-8a0906-d657a7c03-98a7010cd0e593e3-int-pv-gluster-slave-etc"
+    lun: 0
+    fsType: "ext4"
+    readOnly: false
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-gluster-slave-etc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-gluster-slave-etc
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-gluster-slave-logs
+  labels:
+    etiqueta: pv-gluster-slave-logs
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  iscsi:
+    targetPortal: "192.168.6.81:3260"
+    iqn: "iqn.2001-05.com.equallogic:0-8a0906-d987a7c03-1e47010cd11593e3-int-pv-gluster-slave-logs"
+    lun: 0
+    fsType: "ext4"
+    readOnly: false
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-gluster-slave-logs
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-gluster-slave-logs

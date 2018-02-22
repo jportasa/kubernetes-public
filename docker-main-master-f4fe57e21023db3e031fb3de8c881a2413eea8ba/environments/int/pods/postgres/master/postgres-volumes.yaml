@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-pg1-pgdata
+  labels:
+    etiqueta: pv-pg1-pgdata
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  iscsi:
+    targetPortal: "192.168.6.81:3260"
+    iqn: "iqn.2001-05.com.equallogic:0-8a0906-3d37a7c03-5007010e4cd59ad2-int-pv-pg1-pgdata"
+    lun: 0
+    fsType: "ext4"
+    readOnly: false
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-pg1-pgdata
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-pg1-pgdata

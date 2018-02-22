@@ -1,0 +1,66 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jenkins
+  namespace: ci
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      containers:
+      - name: jenkins
+#        image: jenkinsci/jenkins:2.67
+        image: registry.wtransnet.local:5000/sistemas/jenkins-wtn:latest
+        ports:
+        - containerPort: 8080
+        - containerPort: 50000
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: 8080
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 2
+          failureThreshold: 5
+        envFrom:
+        - configMapRef:
+            name: jenkins-configmap
+#        env:
+#        - name: JENKINS_OPTS
+#          valueFrom:
+#            secretKeyRef:
+#              name: jenkins
+#              key: options
+# securityContext, necesario para correr docker dentro del POD
+        securityContext: 
+          privileged: true
+        volumeMounts:
+        - mountPath: /var/jenkins_home
+          name: jenkins-home
+        - mountPath: /var/jenkins_home/k8s-wtn
+          name: jenkins-k8s-admin-int-secret 
+        - mountPath: /var/run
+          name: docker-sock
+        resources:
+          limits:
+            cpu: 3000m
+            memory: 4000Mi
+          requests:
+            cpu: 2000m
+            memory: 1500Mi
+      volumes:
+      - name: jenkins-home
+        persistentVolumeClaim:
+          claimName: pvc-jenkins-data
+      - name: jenkins-k8s-admin-int-secret 
+        secret: 
+          secretName: jenkins-k8s-admin-int-secret
+# docker-sock, necesario para correr docker dentro del POD
+      - name: docker-sock
+        hostPath:
+          path: /var/run
+      imagePullSecrets:
+      - name: registrypullsecret

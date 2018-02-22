@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-web-nginx-www
+  labels:
+    etiqueta: pv-web-nginx-www
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /docker/volumes/web-nginx/pv-web-nginx-www
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-web-nginx-www
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-web-nginx-www
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-web-nginx-nfs
+  labels:
+    etiqueta: pv-web-nginx-nfs
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /docker/volumes/nfs/pv-nfs-data
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-web-nginx-nfs
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-web-nginx-nfs

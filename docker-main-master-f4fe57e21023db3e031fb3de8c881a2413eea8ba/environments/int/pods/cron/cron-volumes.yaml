@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-cron-data
+  labels:
+    etiqueta: pv-cron-data
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  iscsi:
+    targetPortal: "192.168.6.81:3260"
+    iqn: "iqn.2001-05.com.equallogic:0-8a0906-d347a7c03-1d47010e1ec59a01-int-pv-cron-data"
+    lun: 0
+    fsType: "ext4"
+    readOnly: false
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-cron-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  selector:
+    matchLabels:
+      etiqueta: pv-cron-data

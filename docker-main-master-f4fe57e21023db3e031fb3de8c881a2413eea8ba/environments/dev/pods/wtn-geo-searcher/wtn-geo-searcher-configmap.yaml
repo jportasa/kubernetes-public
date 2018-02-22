@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wtn-geo-searcher-configmap
+data:
+  MICROSERVICE_NAME: wtn-geo-searcher
+  DATASOURCE_USERNAME: "appgeo"
+  DATASOURCE_PASSWORD: "appgeo"
+  DATASOURCE_URL: "jdbc:postgresql://postgres/wtndbdev"
+  GEOSEARCHER_COORDINATES_QUEUE_NAME: "geosearcher.coordinates.queue"
+  GEOSEARCHER_COORDINATES_EXCHANGE_NAME: "geosearcher.coordinates.exchange"
+  GEOSEARCHER_COORDINATES_DURABLE: "false"
+  ROUTE_COORDINATES_FINE_TUNE_EXCHANGE_NAME: "tracking.route.coordinates.fine.tune.exchange"
+  # En caso de arrancar con gradle, indicarle donde dejar lo que se descarga de Nexus:  
+  GRADLE_USER_HOME: "/docker/gradle_user_home/wtn-geo-searcher"

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wtn-bridge-wtn3-configmap
+data:
+  MICROSERVICE_NAME: wtn-bridge-wtn3
+  # En caso de arrancar con gradle, indicarle donde dejar lo que se descarga de Nexus:  
+  GRADLE_USER_HOME: "/docker/gradle_user_home/wtn-bridge-wtn3"

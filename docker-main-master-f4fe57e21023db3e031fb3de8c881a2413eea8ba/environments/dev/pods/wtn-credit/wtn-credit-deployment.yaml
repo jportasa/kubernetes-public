@@ -1,0 +1,51 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wtn-credit
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wtn-credit
+    spec:   
+        initContainers:
+        - name: postgres-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 postgres 5432 </dev/null; do echo waiting for postgres UP; sleep 1; done;']
+        - name: redis-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 redis 6379 </dev/null; do echo waiting for redis UP; sleep 1; done;']
+        - name: rabbitmq-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 rabbitmq 5672 </dev/null; do echo waiting for rabbitmq UP; sleep 1; done;']
+        containers:
+        - name: wtn-credit
+          image: registry.wtransnet.local:5000/java8-1/wtn-credit:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: shared-configmap
+            - configMapRef:
+                name: wtn-credit-configmap
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+          - mountPath: /mnt/nfs
+            name: pvc-wtn-credit-nfs
+          - mountPath: /docker/gradle_user_home/wtn-credit
+            name: pvc-wtn-credit-gradle          
+          - mountPath: /git
+            name: pvc-wtn-credit-git
+        volumes:
+          - name: pvc-wtn-credit-nfs
+            persistentVolumeClaim:
+              claimName: pvc-wtn-credit-nfs
+          - name: pvc-wtn-credit-gradle
+            persistentVolumeClaim:
+              claimName: pvc-wtn-credit-gradle
+          - name: pvc-wtn-credit-git
+            persistentVolumeClaim:
+              claimName: pvc-wtn-credit-git
+        imagePullSecrets:
+        - name: registrypullsecret

@@ -1,0 +1,57 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wtn-tracking
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wtn-tracking
+    spec:   
+        initContainers:
+        - name: postgres-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 postgres 5432 </dev/null; do echo waiting for postgres UP; sleep 1; done;']
+        - name: rabbitmq-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 rabbitmq 5672 </dev/null; do echo waiting for rabbitmq UP; sleep 1; done;']
+#        - name: gluster-init
+#          image: busybox
+#          command: ['sh', '-c', 'until nc -w 1 glusterfs-cluster 1 </dev/null; do echo waiting for gluster UP; sleep 1; done;']
+        containers:
+        - name: wtn-tracking
+          image: registry.wtransnet.local:5000/java8-1/wtn-tracking:latest
+          imagePullPolicy: Always
+#          command:
+#          - sleep
+#          - "3600"
+          livenessProbe:
+            httpGet:
+              path: /tracking/private/actuator/health/
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 60
+            timeoutSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          envFrom:
+            - configMapRef:
+                name: shared-configmap
+            - configMapRef:
+                name: wtn-tracking-configmap
+            - secretRef:
+                name: shared-secret
+            - secretRef:
+                name: wtn-tracking-secret
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+          - mountPath: /mnt/nfs
+            name: pvc-wtn-tracking-nfs
+        volumes:
+          - name: pvc-wtn-tracking-nfs
+            persistentVolumeClaim:
+              claimName: pvc-wtn-tracking-nfs
+        imagePullSecrets:
+        - name: registrypullsecret

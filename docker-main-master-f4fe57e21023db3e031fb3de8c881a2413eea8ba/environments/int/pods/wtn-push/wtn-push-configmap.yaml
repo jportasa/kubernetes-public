@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wtn-push-configmap
+data:
+  DATASOURCE_USERNAME: "apppus"
+  TEMPLATES_CONFIG_DIR: "/mnt/nfs/v4/app-data/push/push-config"
+  

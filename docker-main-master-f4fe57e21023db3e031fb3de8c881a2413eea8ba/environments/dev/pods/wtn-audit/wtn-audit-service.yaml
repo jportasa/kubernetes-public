@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wtn-audit
+  labels:
+    app: wtn-audit
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    # Valid external ports range: 30000-32767
+    nodePort: 31008
+  selector:
+    app: wtn-audit

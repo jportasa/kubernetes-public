@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-wtn-file-upload-nfs
+  labels:
+    etiqueta: pv-wtn-file-upload-nfs
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /docker/volumes/nfs/pv-nfs-data
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-wtn-file-upload-nfs
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-wtn-file-upload-nfs
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-wtn-file-upload-gradle
+  labels:
+    etiqueta: pv-wtn-file-upload-gradle
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /docker/gradle_user_home/wtn-file-upload
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-wtn-file-upload-gradle
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-wtn-file-upload-gradle
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-wtn-file-upload-git
+  labels:
+    etiqueta: pv-wtn-file-upload-git
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /git/
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-wtn-file-upload-git
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-wtn-file-upload-git

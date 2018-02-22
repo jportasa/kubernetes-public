@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: postgres-pg2
+  labels:
+    app: postgres-pg2
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres-pg2
+    spec:
+        nodeSelector:
+          name: kubernetes2.wtransnet.local
+        containers:
+        - name: postgres-pg2
+          image: registry.wtransnet.local:5000/sistemas/postgres:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 5432
+            name : serviceport
+          volumeMounts:
+          - mountPath: /u01/postgres/pgdata
+            name: pvc-pg2-pgdata
+          - mountPath: /mnt/postgres/install
+            name: postgres-pg2-configmap
+        volumes:
+        - name: pvc-pg2-pgdata
+          persistentVolumeClaim:
+           claimName:  pvc-pg2-pgdata
+        - name: postgres-pg2-configmap
+          configMap:
+            name: postgres-pg2-configmap
+        imagePullSecrets:
+        - name: registrypullsecret

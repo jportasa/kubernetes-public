@@ -1,0 +1,24 @@
+# Docu: https://github.com/rlesouef/alpine-openssh
+apiVersion: v1
+kind: Pod
+metadata:
+  name: restore-volume
+  labels:
+    app: restore-volume
+spec:
+  containers:
+  - name: restore-volume
+    image: registry.wtransnet.local:5000/sistemas/ssh-server:latest
+    imagePullPolicy: Always
+#    command:
+#    - sleep
+#    - "3600"
+    volumeMounts:
+    - mountPath: /mnt
+      name: pvc-restore-volume-data
+  volumes:
+  - name: pvc-restore-volume-data
+    persistentVolumeClaim:
+      claimName:  pvc-restore-volume-data
+  imagePullSecrets:
+  - name: registrypullsecret

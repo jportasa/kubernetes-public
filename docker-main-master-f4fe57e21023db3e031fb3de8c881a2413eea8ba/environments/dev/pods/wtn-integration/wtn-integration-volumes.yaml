@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-wtn-integration-nfs
+  labels:
+    etiqueta: pv-wtn-integration-nfs
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /docker/volumes/nfs/pv-nfs-data
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-wtn-integration-nfs
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-wtn-integration-nfs
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-wtn-integration-gradle
+  labels:
+    etiqueta: pv-wtn-integration-gradle
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /docker/gradle_user_home/wtn-integration
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-wtn-integration-gradle
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-wtn-integration-gradle
+---
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-wtn-integration-git
+  labels:
+    etiqueta: pv-wtn-integration-git
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /git/
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-wtn-integration-git
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-wtn-integration-git

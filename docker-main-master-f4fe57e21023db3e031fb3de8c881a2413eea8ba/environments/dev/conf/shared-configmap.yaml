@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shared-configmap
+data:
+  I18N_DIR: "/mnt/nfs/v4/app-data/literals/"
+  I18N_CACHE_SECONDS: "10"
+  REDIS_HOSTNAME: redis
+  URL_WTN3: "http://192.168.99.1:8080"
+  URL_AUTH: "http://wtn-auth:8080"
+  FILE_UPLOADTEMP_DIR: "/mnt/nfs/v4/app-data/upload-temp/"
+  FILE_DOWNLOADTEMP_DIR: "/mnt/nfs/v4/app-data/download-temp/"
+  EMAIL_ATTACHMENT_FOLDER: "/mnt/nfs/v4/app-data/email/"
+  RABBIT_HOSTNAME: "rabbitmq"
+  RABBIT_USERNAME: "username"
+  RABBIT_PASSWORD: "password"
+  RABBIT_VIRTUALHOST: "/"
+  SPRING_PROFILES_ACTIVE: "dev"
+  URL_CERCALIA: "http://lb.cercalia.com"
+  KEY_CERCALIA: "417b7b65d2bcd84f858054b07c7acf52de65444490fa021d978f2f3afa7d4c88"
+  REFERER_CERCALIA: "http://app.wtransnet.local"
+  URL_FILE_UPLOAD: "http://wtn-file-upload:8080"
+  URL_GEO_SEARCHER: "http://wtn-geo-searcher:8080"
+  EXTERNAL_HOST: "192.168.99.1"
+  SERVER_PORT: "8080"

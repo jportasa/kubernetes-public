@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gluster-slave
+  labels:
+    app: gluster-slave
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: gluster-slave
+    spec:
+      nodeSelector:
+        name: kubernetes2.wtransnet.local
+      hostNetwork: true # such a pod can directly see the network interfaces of the host machine where the pod was started    
+      containers:
+      - name: gluster-slave
+        image: registry.wtransnet.local:5000/sistemas/gluster-centos:latest
+        volumeMounts:
+        - name: pvc-gluster-slave-data
+          mountPath: "/mnt/glusterfs/vol01/brick1"
+        - name: pvc-gluster-slave-etc
+          mountPath: "/etc/glusterfs"
+        - name: pvc-gluster-slave-config
+          mountPath: "/var/lib/glusterd"
+        - name: pvc-gluster-slave-logs
+          mountPath: "/var/log/glusterfs"
+        securityContext: 
+          capabilities: {}
+          privileged: true
+      volumes:
+      - name: pvc-gluster-slave-data
+        hostPath:
+           path: "/mnt/glusterfs/data"
+      - name: pvc-gluster-slave-etc
+        hostPath:
+           path: "/mnt/glusterfs/etc"
+      - name: pvc-gluster-slave-config
+        hostPath:
+           path: "/mnt/glusterfs/config"
+      - name: pvc-gluster-slave-logs
+        hostPath:
+           path: "/mnt/glusterfs/logs"
+      imagePullSecrets:
+      - name: registrypullsecret

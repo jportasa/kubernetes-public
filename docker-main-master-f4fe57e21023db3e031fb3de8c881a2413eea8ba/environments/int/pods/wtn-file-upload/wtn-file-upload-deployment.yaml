@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wtn-file-upload
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wtn-file-upload
+    spec:   
+        initContainers:
+#        - name: gluster-init
+#          image: busybox
+#          command: ['sh', '-c', 'until nc -w 1 glusterfs-cluster 49152 </dev/null; do echo waiting for gluster UP; sleep 1; done;']
+        containers:
+        - name: wtn-file-upload
+          image: registry.wtransnet.local:5000/java8-1/wtn-file-upload:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: shared-configmap
+            - configMapRef:
+                name: wtn-file-upload-configmap
+            - secretRef:
+                name: shared-secret
+            - secretRef:
+                name: wtn-auth-secret
+          livenessProbe:
+            httpGet:
+              path: /file-upload/private/actuator/health/
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 60
+            timeoutSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3 
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+          - mountPath: /mnt/nfs
+            name: pvc-wtn-file-upload-nfs
+        volumes:
+          - name: pvc-wtn-file-upload-nfs
+            persistentVolumeClaim:
+              claimName: pvc-wtn-file-upload-nfs
+        imagePullSecrets:
+        - name: registrypullsecret

@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: web-nginx
+  labels:
+    app: web-nginx
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: web-nginx
+    spec:
+        containers:
+        - name: web-nginx
+          image: registry.wtransnet.local:5000/sistemas/web-nginx:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 80
+          volumeMounts:
+          - mountPath: /var/www
+            name: pvc-web-nginx-www
+          - mountPath: /mnt/nfsdata
+            name: pvc-web-nginx-nfsdata
+          - mountPath: /etc/nginx/sites-enabled
+            name: web-nginx-sites-enabled-configmap
+        imagePullSecrets:
+        - name: registrypullsecret
+        volumes:
+        - name:  pvc-web-nginx-www
+          persistentVolumeClaim:
+            claimName:  pvc-web-nginx-www
+        - name:  pvc-web-nginx-nfsdata
+          persistentVolumeClaim:
+            claimName:  pvc-web-nginx-nfsdata
+        - name: web-nginx-sites-enabled-configmap
+          configMap:
+            name: web-nginx-sites-enabled-configmap
+            items:
+            - key: app
+              path: app
+            - key: www
+              path: www
+            - key: static
+              path: static

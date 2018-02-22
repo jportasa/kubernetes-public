@@ -1,0 +1,3 @@
+0 0 1 * * bash /usr/local/bin/scripts-template.sh backup 
+0 0 2 * * bash /usr/local/bin/scripts-template.sh clean
+0 0 2 * * bash /usr/local/bin/scripts-template.sh elasticsearch

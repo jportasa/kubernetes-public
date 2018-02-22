@@ -1,0 +1,7 @@
+server {
+        server_name static-dev.wtransnet.com;
+        root /var/www/static;
+
+        access_log /var/log/nginx/static.wtransnet.local.access.log;
+        error_log  /var/log/nginx/static.wtransnet.local.error.log;
+}

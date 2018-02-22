@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  labels:
+    app: rabbitmq
+spec:
+  # this replicas value is default
+  # modify it according to your case
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+        containers:
+        - name: rabbitmq
+          image: rabbitmq:3-management
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 5672
+            name : serviceport
+          - containerPort: 15672
+            name: mgmtport
+          envFrom:
+            - configMapRef:
+                name: shared-configmap
+            - configMapRef:
+                name: rabbitmq-configmap
+            - secretRef:
+                name: shared-secret
+            - secretRef:
+                name: rabbitmq-secret
+          volumeMounts:
+          - mountPath: /var/lib/rabbitmq
+            name : pvc-rabbitmq
+        volumes:
+        - name: pvc-rabbitmq
+          persistentVolumeClaim:
+             claimName: pvc-rabbitmq
+        imagePullSecrets:
+        - name: registrypullsecret
+        

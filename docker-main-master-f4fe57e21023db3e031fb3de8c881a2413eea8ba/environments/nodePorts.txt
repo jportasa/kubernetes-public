@@ -1,0 +1,44 @@
+Reserved Ports for all environments
+===================================
+
+# Valid external ports range: 30000-32767
+
+sysops:
+
+30000:dashboard
+30001:grafana
+30080:nginx-ingress-lb
+30432:postgres-pg1
+30433:postgres-pg2
+30434:postgres
+30601:kibana
+30672:rabbitmq
+30673:backuppc
+30673:cron-ssh
+30674:gitlab-http
+30675:gitlab-ssh
+30676:ssh-server
+30677:prometheus
+30678:grafana de prometheus
+
+
+developers:
+
+31000:wtn-auth
+31001:wtn-file-upload
+31002:wtn-remote-log
+31003:wtn-bridge-wtn3
+31004:wtn-geo-searcher
+31005:wtn-credit
+31006:wtn-tracking
+31007:wtn-email
+31008:wtn-audit
+31009:wtn-integration
+31010:wtn-push
+
+31081:web-nginx-wtn-tracking-web
+31082:web-nginx-wtn-tracking-web-statistics
+31083:web-nginx-wtn-adm-web
+31084:web-nginx-wtn-adm-web-statistics
+
+31082:jenkins

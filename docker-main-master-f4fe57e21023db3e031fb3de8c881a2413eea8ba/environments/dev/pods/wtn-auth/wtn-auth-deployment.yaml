@@ -1,0 +1,51 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wtn-auth
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wtn-auth
+    spec:
+        initContainers:
+        - name: postgres-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 postgres 5432 </dev/null; do echo waiting for postgres UP; sleep 1; done;']
+        - name: redis-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 redis 6379 </dev/null; do echo waiting for redis UP; sleep 1; done;']
+        - name: rabbitmq-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 rabbitmq 5672 </dev/null; do echo waiting for rabbitmq UP; sleep 1; done;']
+        containers:
+        - name: wtn-auth
+          image: registry.wtransnet.local:5000/java8-1/wtn-auth:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: shared-configmap
+            - configMapRef:
+                name: wtn-auth-configmap
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+          - mountPath: /mnt/nfs
+            name: pvc-wtn-auth-nfs
+          - mountPath: /docker/gradle_user_home/wtn-auth
+            name: pvc-wtn-auth-gradle          
+          - mountPath: /git
+            name: pvc-wtn-auth-git
+        volumes:
+          - name: pvc-wtn-auth-nfs
+            persistentVolumeClaim:
+              claimName: pvc-wtn-auth-nfs
+          - name: pvc-wtn-auth-gradle
+            persistentVolumeClaim:
+              claimName: pvc-wtn-auth-gradle
+          - name: pvc-wtn-auth-git
+            persistentVolumeClaim:
+              claimName: pvc-wtn-auth-git
+        imagePullSecrets:
+        - name: registrypullsecret

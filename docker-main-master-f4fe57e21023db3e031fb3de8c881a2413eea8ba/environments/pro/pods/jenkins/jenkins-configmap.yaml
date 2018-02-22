@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-configmap
+  namespace: ci
+data:
+  JAVA_OPTS: "-Xmx4096m"

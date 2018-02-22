@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wtn-audit-configmap
+data:
+  MICROSERVICE_NAME: wtn-audit
+  DATASOURCE_USERNAME: "appaud"
+  DATASOURCE_PASSWORD: "appaud"
+  DATASOURCE_URL: "jdbc:postgresql://postgres/wtndbdev"
+  # En caso de arrancar con gradle, indicarle donde dejar lo que se descarga de Nexus:  
+  GRADLE_USER_HOME: "/docker/gradle_user_home/wtn-audit"
+

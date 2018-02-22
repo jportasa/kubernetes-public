@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gluster-master
+  labels:
+    app: gluster-master
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: gluster-master
+    spec:
+      nodeSelector:
+        name: kubernetes1.wtransnet.local
+      hostNetwork: true # such a pod can directly see the network interfaces of the host machine where the pod was started    
+      containers:
+      - name: gluster-master
+        image: registry.wtransnet.local:5000/sistemas/gluster-centos:latest
+        volumeMounts:
+        - name: pvc-gluster-master-data
+          mountPath: "/mnt/glusterfs/vol01/brick1"
+        - name: pvc-gluster-master-etc
+          mountPath: "/etc/glusterfs"
+        - name: pvc-gluster-master-config
+          mountPath: "/var/lib/glusterd"
+        - name: pvc-gluster-master-logs
+          mountPath: "/var/log/glusterfs"
+        securityContext: 
+          capabilities: {}
+          privileged: true
+      volumes:
+      - name: pvc-gluster-master-data
+        hostPath:
+           path: "/mnt/glusterfs/data"
+      - name: pvc-gluster-master-etc
+        hostPath:
+           path: "/mnt/glusterfs/etc"
+      - name: pvc-gluster-master-config
+        hostPath:
+           path: "/mnt/glusterfs/config"
+      - name: pvc-gluster-master-logs
+        hostPath:
+           path: "/mnt/glusterfs/logs"
+      imagePullSecrets:
+      - name: registrypullsecret

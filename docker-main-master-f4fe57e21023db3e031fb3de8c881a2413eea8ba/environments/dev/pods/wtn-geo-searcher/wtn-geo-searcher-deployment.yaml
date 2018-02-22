@@ -1,0 +1,51 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wtn-geo-searcher
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wtn-geo-searcher
+    spec:   
+        initContainers:
+        - name: postgres-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 postgres 5432 </dev/null; do echo waiting for postgres UP; sleep 1; done;']
+        - name: redis-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 redis 6379 </dev/null; do echo waiting for redis UP; sleep 1; done;']
+        - name: rabbitmq-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 rabbitmq 5672 </dev/null; do echo waiting for rabbitmq UP; sleep 1; done;']
+        containers:
+        - name: wtn-geo-searcher
+          image: registry.wtransnet.local:5000/java8-1/wtn-geo-searcher:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: shared-configmap
+            - configMapRef:
+                name: wtn-geo-searcher-configmap
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+          - mountPath: /mnt/nfs
+            name: pvc-wtn-geo-searcher-nfs
+          - mountPath: /docker/gradle_user_home/wtn-geo-searcher
+            name: pvc-wtn-geo-searcher-gradle          
+          - mountPath: /git
+            name: pvc-wtn-geo-searcher-git
+        volumes:
+          - name: pvc-wtn-geo-searcher-nfs
+            persistentVolumeClaim:
+              claimName: pvc-wtn-geo-searcher-nfs
+          - name: pvc-wtn-geo-searcher-gradle
+            persistentVolumeClaim:
+              claimName: pvc-wtn-geo-searcher-gradle
+          - name: pvc-wtn-geo-searcher-git
+            persistentVolumeClaim:
+              claimName: pvc-wtn-geo-searcher-git
+        imagePullSecrets:
+        - name: registrypullsecret

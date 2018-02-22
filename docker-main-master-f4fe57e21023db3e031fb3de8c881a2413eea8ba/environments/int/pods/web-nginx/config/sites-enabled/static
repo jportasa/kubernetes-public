@@ -1,0 +1,8 @@
+server {
+        server_name static-int.wtransnet.com;
+        root /mnt/nfs/static;
+        
+        # Logs access.log y error.log se reenvian a stdout y stderr
+        #access_log /var/log/nginx/static.wtransnet.local.access.log;
+        #error_log /var/log/nginx/static.wtransnet.local.error.log;
+}

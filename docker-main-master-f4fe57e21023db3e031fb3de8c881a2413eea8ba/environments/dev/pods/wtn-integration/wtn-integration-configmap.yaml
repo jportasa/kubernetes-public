@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wtn-integration-configmap
+data:
+  MICROSERVICE_NAME: wtn-integration
+  DATASOURCE_USERNAME: "appath"
+  DATASOURCE_PASSWORD: "appath"
+  DATASOURCE_URL: "jdbc:postgresql://postgres/wtndbdev"
+  # En caso de arrancar con gradle, indicarle donde dejar lo que se descarga de Nexus:  
+  GRADLE_USER_HOME: "/docker/gradle_user_home/wtn-integration"

@@ -1,0 +1,4 @@
+NOTA: no cambiar el nombre de este fichero porque en el entrypoint esta definido con el mismo nombre
+
+# * * * * * bash /usr/local/bin/script-template.sh; [ $? -ne 0 ] && echo "(FAIL) Cron Failure script-template.sh `date`" | swaks --to jporta@wtransnet.com --server 127.0.0.1
+* * * * * bash /usr/local/bin/postgres-backup-logico-pgsql.sh

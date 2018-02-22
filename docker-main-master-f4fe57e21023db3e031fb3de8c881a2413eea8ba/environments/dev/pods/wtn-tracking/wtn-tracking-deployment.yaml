@@ -1,0 +1,58 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wtn-tracking
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wtn-tracking
+    spec:
+        initContainers:
+        - name: postgres-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 postgres 5432 </dev/null; do echo waiting for postgres UP; sleep 1; done;']
+        - name: redis-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 redis 6379 </dev/null; do echo waiting for redis UP; sleep 1; done;']
+        - name: rabbitmq-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 rabbitmq 5672 </dev/null; do echo waiting for rabbitmq UP; sleep 1; done;']
+        containers:
+        - name: wtn-tracking
+          image: registry.wtransnet.local:5000/java8-1/wtn-tracking:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: shared-configmap
+            - configMapRef:
+                name: wtn-tracking-configmap
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1024Mi
+            requests:
+              cpu: 200m
+              memory: 512Mi
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+          - mountPath: /mnt/nfs
+            name: pvc-wtn-tracking-nfs
+          - mountPath: /docker/gradle_user_home/wtn-tracking
+            name: pvc-wtn-tracking-gradle          
+          - mountPath: /git
+            name: pvc-wtn-tracking-git
+        volumes:
+          - name: pvc-wtn-tracking-nfs
+            persistentVolumeClaim:
+              claimName: pvc-wtn-tracking-nfs
+          - name: pvc-wtn-tracking-gradle
+            persistentVolumeClaim:
+              claimName: pvc-wtn-tracking-gradle
+          - name: pvc-wtn-tracking-git
+            persistentVolumeClaim:
+              claimName: pvc-wtn-tracking-git
+        imagePullSecrets:
+        - name: registrypullsecret

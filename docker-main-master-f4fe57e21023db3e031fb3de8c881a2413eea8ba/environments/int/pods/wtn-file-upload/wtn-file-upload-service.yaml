@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wtn-file-upload
+  labels:
+    app: wtn-file-upload
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    # Valid external ports range: 30000-32767
+    nodePort: 31001
+  selector:
+    app: wtn-file-upload

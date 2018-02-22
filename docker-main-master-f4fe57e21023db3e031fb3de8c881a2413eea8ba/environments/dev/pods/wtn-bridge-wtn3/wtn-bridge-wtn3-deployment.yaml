@@ -1,0 +1,51 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wtn-bridge-wtn3
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wtn-bridge-wtn3
+    spec:   
+        initContainers:
+        - name: postgres-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 postgres 5432 </dev/null; do echo waiting for postgres UP; sleep 1; done;']
+        - name: redis-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 redis 6379 </dev/null; do echo waiting for redis UP; sleep 1; done;']
+        - name: rabbitmq-init
+          image: busybox
+          command: ['sh', '-c', 'until nc -w 1 rabbitmq 5672 </dev/null; do echo waiting for rabbitmq UP; sleep 1; done;']
+        containers:
+        - name: wtn-bridge-wtn3
+          image: registry.wtransnet.local:5000/java8-1/wtn-bridge-wtn3:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: shared-configmap
+            - configMapRef:
+                name: wtn-bridge-wtn3-configmap
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+          - mountPath: /mnt/nfs
+            name: pvc-wtn-bridge-wtn3-nfs
+          - mountPath: /docker/gradle_user_home/wtn-bridge-wtn3
+            name: pvc-wtn-bridge-wtn3-gradle          
+          - mountPath: /git
+            name: pvc-wtn-bridge-wtn3-git
+        volumes:
+          - name: pvc-wtn-bridge-wtn3-nfs
+            persistentVolumeClaim:
+              claimName: pvc-wtn-bridge-wtn3-nfs
+          - name: pvc-wtn-bridge-wtn3-gradle
+            persistentVolumeClaim:
+              claimName: pvc-wtn-bridge-wtn3-gradle
+          - name: pvc-wtn-bridge-wtn3-git
+            persistentVolumeClaim:
+              claimName: pvc-wtn-bridge-wtn3-git
+        imagePullSecrets:
+        - name: registrypullsecret

@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-rabbitmq
+  labels:
+    etiqueta: pv-rabbitmq
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  iscsi:
+    targetPortal: "192.168.6.81:3260"
+    iqn: "iqn.2001-05.com.equallogic:0-8a0906-5857a7c03-0a67010da1a597b5-int-pv-rabbitmq"
+    lun: 0
+    fsType: "ext4"
+    readOnly: false
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-rabbitmq
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-rabbitmq
+      

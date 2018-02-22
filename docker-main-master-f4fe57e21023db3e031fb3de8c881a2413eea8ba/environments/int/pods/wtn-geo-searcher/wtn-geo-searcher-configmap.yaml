@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wtn-geo-searcher-configmap
+data:
+#  APP_CONFIG_DIR: "/usr/local/jetty/webapps-config"
+  DATASOURCE_USERNAME: "appgeo"
+  GEOSEARCHER_COORDINATES_QUEUE_NAME: "geosearcher.coordinates.queue"
+  GEOSEARCHER_COORDINATES_EXCHANGE_NAME: "geosearcher.coordinates.exchange"
+  GEOSEARCHER_COORDINATES_DURABLE: "false"
+  ROUTE_COORDINATES_FINE_TUNE_EXCHANGE_NAME: "tracking.route.coordinates.fine.tune.exchange"

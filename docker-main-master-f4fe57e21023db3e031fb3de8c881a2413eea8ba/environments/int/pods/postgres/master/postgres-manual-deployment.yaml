@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: postgres-pg1
+  labels:
+    app: postgres-pg1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres-pg1
+    spec:
+        nodeSelector:
+          name: kubernetes1.wtransnet.local
+        containers:
+        - name: postgres-pg1
+          image: registry.wtransnet.local:5000/sistemas/postgres:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 5432
+            name : serviceport
+          volumeMounts:
+          - mountPath: /u01/postgres/pgdata
+            name: pvc-pg1-pgdata
+          - mountPath: /mnt/postgres/install
+            name: postgres-pg1-configmap
+          command: ["/bin/bash"]
+          args: ["-c", "trap : TERM INT; sleep infinity & wait"]
+        volumes:
+        - name: pvc-pg1-pgdata
+          persistentVolumeClaim:
+           claimName:  pvc-pg1-pgdata
+        - name: postgres-pg1-configmap
+          configMap:
+            name: postgres-pg1-configmap
+        imagePullSecrets:
+        - name: registrypullsecret

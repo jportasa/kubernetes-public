@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wtn-sms-env-specific-configmap
+data:
+  APP_CONFIG_DIR: "/usr/local/jetty/webapps-config"
+  DATASOURCE_USERNAME: "appwtn"
+  DATASOURCE_PASSWORD: "appwtn"
+  DATASOURCE_URL: "jdbc:postgresql://postgres/wtndbdev"

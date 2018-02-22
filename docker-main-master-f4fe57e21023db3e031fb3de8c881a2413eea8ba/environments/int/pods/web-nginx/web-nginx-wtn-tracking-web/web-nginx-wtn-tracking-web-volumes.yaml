@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-web-nginx-wtn-tracking-web-nfsdata
+  labels:
+    etiqueta: pv-web-nginx-wtn-tracking-web-nfs
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Recycle
+  glusterfs:
+    path: vol01
+    endpoints: glusterfs-cluster
+    readOnly: false
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-web-nginx-wtn-tracking-web-nfs
+spec:
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-web-nginx-wtn-tracking-web-nfs

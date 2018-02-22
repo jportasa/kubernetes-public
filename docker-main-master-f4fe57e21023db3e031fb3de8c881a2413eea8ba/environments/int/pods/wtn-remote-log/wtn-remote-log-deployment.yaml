@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wtn-remote-log
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wtn-remote-log
+    spec:   
+        initContainers:
+#        - name: gluster-init
+#          image: busybox
+#          command: ['sh', '-c', 'until nc -w 1 glusterfs-cluster 1 </dev/null; do echo waiting for gluster UP; sleep 1; done;']
+        containers:
+        - name: wtn-remote-log
+          image: registry.wtransnet.local:5000/java8-1/wtn-remote-log:latest
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /remote-log/private/actuator/health/
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 60
+            timeoutSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          envFrom:
+            - configMapRef:
+                name: shared-configmap
+            - configMapRef:
+                name: wtn-remote-log-configmap
+            - secretRef:
+                name: shared-secret
+            - secretRef:
+                name: wtn-remote-log-secret
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+          - mountPath: /mnt/nfs
+            name: pvc-wtn-remote-log-nfs
+        volumes:
+          - name: pvc-wtn-remote-log-nfs
+            persistentVolumeClaim:
+              claimName: pvc-wtn-remote-log-nfs
+        imagePullSecrets:
+        - name: registrypullsecret

@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-wtn-remote-log-nfs
+  labels:
+    etiqueta: pv-wtn-remote-log-nfs
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /docker/volumes/nfs/pv-nfs-data
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-wtn-remote-log-nfs
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-wtn-remote-log-nfs
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-wtn-remote-log-gradle
+  labels:
+    etiqueta: pv-wtn-remote-log-gradle
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /docker/gradle_user_home/wtn-remote-log
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-wtn-remote-log-gradle
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-wtn-remote-log-gradle
+---
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-wtn-remote-log-git
+  labels:
+    etiqueta: pv-wtn-remote-log-git
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /git/
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-wtn-remote-log-git
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-wtn-remote-log-git

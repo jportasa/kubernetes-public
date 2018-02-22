@@ -1,0 +1,62 @@
+#!/bin/bash
+ 
+############# 1 NODO ################
+
+#Importante!!! hay que instalar "apt-get install glusterfs-client" en todos los nodos donde corra gluster
+
+NODE1=192.168.43.190
+VOLNAME="vol01"
+VOLPATH="/mnt/glusterfs/$VOLNAME/brick1"
+ 
+mkdir -p $VOLPATH
+ 
+gluster volume create $VOLNAME $NODE1:$VOLPATH/brick force
+gluster volume start $VOLNAME
+gluster volume status
+ 
+############# 2 NODOS ################
+
+#Importante!!! hay que instalar "apt-get install gluster-client" en todos los nodos donde corra gluster
+
+NODE1=192.168.43.190
+NODE2=192.168.43.191
+VOLNAME="vol01"
+VOLPATH="/mnt/glusterfs/$VOLNAME/brick1"
+
+#En nodo 1:
+mkdir -p $VOLPATH
+ 
+#En nodo 2: 
+mkdir -p $VOLPATH
+
+#Ejecutar dentro del POD gluster-1:
+ 
+gluster peer probe $NODE2
+gluster volume create $VOLNAME replica 2 $NODE1:$VOLPATH/brick $NODE2:/$VOLPATH/brick 
+gluster volume start $VOLNAME
+ 
+gluster volume status
+
+############ GEOREPLICA ################
+
+#Docu: http://gluster.readthedocs.io/en/latest/Administrator%20Guide/Geo%20Replication/
+
+USER=geogroup
+PATH=/data/glusterfs/
+MASTERVOLUME=vol01
+SLAVEVOLUME=slavevol01
+SLAVEHOST=192.168.43.191
+
+# En el slave
+adduser geogroup
+gluster-mountbroker setup $PATH $USER
+gluster-mountbroker add $SLAVEVOLUME $USER
+#Check the status of setup using,
+gluster-mountbroker status
+
+# Restart glusterd service on all Slave nodes.
+# On one of the Master nodes
+ssh-keygen
+ssh-copy-id $USER@$SLAVEHOST
+gluster-georep-sshkey generate --no-prefix
+gluster volume geo-replication $MASTERVOLUME $USER@$SLAVEHOST::$SLAVEVOLUME create push-pem

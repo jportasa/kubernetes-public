@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wtn-file-upload-configmap
+data:
+  MICROSERVICE_NAME: wtn-file-upload
+  # En caso de arrancar con gradle, indicarle donde dejar lo que se descarga de Nexus:  
+  GRADLE_USER_HOME: "/docker/gradle_user_home/wtn-file-upload"

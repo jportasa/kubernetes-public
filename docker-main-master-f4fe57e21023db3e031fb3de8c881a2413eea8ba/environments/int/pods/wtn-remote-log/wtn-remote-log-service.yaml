@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wtn-remote-log
+  labels:
+    app: wtn-remote-log
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    # Valid external ports range: 30000-32767
+    nodePort: 31002
+  selector:
+    app: wtn-remote-log

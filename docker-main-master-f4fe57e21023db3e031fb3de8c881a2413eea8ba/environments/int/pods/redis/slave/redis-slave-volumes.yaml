@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-redis-slave-data
+  labels:
+    etiqueta: pv-redis-slave-data
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  iscsi:
+    targetPortal: "192.168.6.81:3260"
+    iqn: "iqn.2001-05.com.equallogic:0-8a0906-2497a7c03-fc47010cd17593e6-int-pv-redis-slave-data"
+    lun: 0
+    fsType: "ext4"
+    readOnly: false
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-redis-slave-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-redis-slave-data

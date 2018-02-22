@@ -1,0 +1,9 @@
+Viewing logs on Container-Optimized OS and Ubuntu
+
+To view logs on a node with the Container-Optimized OS or Ubuntu node image, you must use the journalctl command. For example, to view Docker daemon logs:
+
+sudo journalctl -u docker
+
+To view kubelet logs:
+
+sudo journalctl -u kubelet

@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+        containers:
+        - name: redis
+          image: registry.wtransnet.local:5000/sistemas/redis:latest
+          imagePullPolicy: Always
+          #resources:
+          #  requests:
+          #   cpu: 100m
+          #   memory: 100Mi
+          ports:
+          - containerPort: 6379
+          volumeMounts:
+          - mountPath: /data
+            name: pvc-redis-data 
+        volumes:
+        - name: pvc-redis-data
+          emptyDir: {}
+        imagePullSecrets:
+        - name: registrypullsecret

@@ -1,0 +1,59 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cron
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cron
+    spec:
+        containers:
+        - name: postfix
+          image: registry.wtransnet.local:5000/sistemas/postfix:latest
+          imagePullPolicy: Always   
+          env:
+          - name: HOSTNAME #Se usa para configurar el postfix side container
+            value: "cron.wtransnet.com"
+          envFrom:
+            - configMapRef:
+                name: shared-configmap
+        - name: cron
+          image: registry.wtransnet.local:5000/sistemas/cron:latest
+          imagePullPolicy: Always
+#          command:
+#          - sleep
+#          - "3600"
+          envFrom:
+            - secretRef:
+                name: cron-secret
+          ports:
+          - containerPort: 22
+          volumeMounts:
+          - mountPath: /usr/local/wtn/bin
+            name: cron-scripts-configmap
+          - mountPath: /etc/cron.d
+            name: cron-schedule-configmap
+#          - mountPath: /mnt/data
+#            name: pvc-cron-data
+        volumes:
+          - name: cron-scripts-configmap
+            configMap:
+              name: cron-scripts-configmap
+              items:
+              - key: postgres-backup-logico-pgsql.cfg
+                path: postgres-backup-logico-pgsql.cfg
+              - key: postgres-backup-logico-pgsql.sh
+                path: postgres-backup-logico-pgsql.sh
+          - name: cron-schedule-configmap
+            configMap:
+              name: cron-schedule-configmap
+              items:
+              - key: cron-schedule.txt
+                path: cron-schedule.txt
+#          - name: pvc-cron-data
+#            persistentVolumeClaim:
+#              claimName: pvc-cron-data
+        imagePullSecrets:
+        - name: registrypullsecret

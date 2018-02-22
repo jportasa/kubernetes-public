@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wtn-audit
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wtn-audit
+    spec:
+#        initContainers:
+#        - name: postgres-init
+#          image: busybox
+#          command: ['sh', '-c', 'until nc -w 1 postgres 5432 </dev/null; do echo waiting for postgres UP; sleep 1; done;']
+#        - name: redis-init
+#          image: busybox
+#          command: ['sh', '-c', 'until nc -w 1 redis 6379 </dev/null; do echo waiting for redis UP; sleep 1; done;']
+#        - name: rabbitmq-init
+#          image: busybox
+#          command: ['sh', '-c', 'until nc -w 1 rabbitmq 5672 </dev/null; do echo waiting for rabbitmq UP; sleep 1; done;']
+        containers:
+        - name: wtn-audit
+          image: registry.wtransnet.local:5000/java8-1/wtn-audit:latest
+          imagePullPolicy: Always
+#          command:
+#          - sleep
+#          - "3600"
+          envFrom:
+            - configMapRef:
+                name: shared-configmap
+            - configMapRef:
+                name: wtn-audit-configmap
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+          - mountPath: /mnt/nfs
+            name: pvc-wtn-audit-nfs
+          - mountPath: /docker/gradle_user_home/wtn-audit
+            name: pvc-wtn-audit-gradle          
+          - mountPath: /git
+            name: pvc-wtn-audit-git
+        volumes:
+          - name: pvc-wtn-audit-nfs
+            persistentVolumeClaim:
+              claimName: pvc-wtn-audit-nfs
+          - name: pvc-wtn-audit-gradle
+            persistentVolumeClaim:
+              claimName: pvc-wtn-audit-gradle
+          - name: pvc-wtn-audit-git
+            persistentVolumeClaim:
+              claimName: pvc-wtn-audit-git
+        imagePullSecrets:
+        - name: registrypullsecret

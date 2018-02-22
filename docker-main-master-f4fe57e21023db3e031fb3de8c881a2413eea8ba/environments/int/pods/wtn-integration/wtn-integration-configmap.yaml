@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wtn-integration-configmap
+data:
+  DATASOURCE_USERNAME: "appint"
+  URL_ERP: "http://erpdev01.wtransnet.local"
+  URL_CRM: "http://sugarpre.wtransnet.net"
+  SMTP_HOST: mail.wtransnet.local

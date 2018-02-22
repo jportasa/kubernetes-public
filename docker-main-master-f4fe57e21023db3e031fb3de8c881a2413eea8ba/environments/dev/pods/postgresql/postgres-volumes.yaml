@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-postgres-etc
+  labels:
+    etiqueta: pv-postgres-etc
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /data/docker/volumes/postgres/pv-postgres-etc/
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-postgres-pgdata
+  labels:
+    etiqueta: pv-postgres-pgdata
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /data/docker/volumes/postgres/pv-postgres-pgdata/
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-postgres-lib
+  labels:
+    etiqueta: pv-postgres-lib
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /data/docker/volumes/postgres/pv-postgres-lib/
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-postgres-dump
+  labels:
+    etiqueta: pv-postgres-dump
+spec:
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /docker/volumes/postgres/pv-postgres-runtime/
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-postgres-etc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-postgres-etc
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-postgres-pgdata
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-postgres-pgdata
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-postgres-lib
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-postgres-lib
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-postgres-dump
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  selector:
+    matchLabels:
+      etiqueta: pv-postgres-dump

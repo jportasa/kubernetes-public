@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab
+  labels:
+    name: gitlab
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    nodePort: 30674
+  - name: ssh
+    port: 22
+    nodePort: 30675
+  selector:
+    name: gitlab

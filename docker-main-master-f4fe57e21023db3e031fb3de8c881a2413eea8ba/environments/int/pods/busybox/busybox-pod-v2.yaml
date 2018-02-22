@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: restore-volume
+  labels:
+    app: restore-volume
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: restore-volume
+    spec:
+        containers:
+        - name: restore-volume
+          image: busybox
+          volumeMounts:
+          - mountPath: /mnt
+            name: pvc-pg1-pgdata
+          - mountPath: /mnt/postgres/install
+            name: postgres-pg1-configmap
+        volumes:
+        - name: pvc-restore-volume-data
+          persistentVolumeClaim:
+           claimName:  pvc-restore-volume-data

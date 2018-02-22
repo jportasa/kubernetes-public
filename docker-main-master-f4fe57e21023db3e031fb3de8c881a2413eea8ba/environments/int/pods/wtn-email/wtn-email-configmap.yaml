@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wtn-email-configmap
+data:
+  SMTP_HOST: mail.wtransnet.local
+  SMTP_USER: ""
+  SMTP_PASSWORD: ""
+  TEMPLATES_CONFIG_DIR: /mnt/nfs/v4/app-data/email/email-config/config
+  FILE_RESOURCE_LOADER_PATH: /mnt/nfs/v4/app-data/email/email-config/templates

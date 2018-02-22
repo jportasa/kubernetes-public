@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wtn-tracking-configmap
+data:
+  DATASOURCE_USERNAME: "apptrk"
+  FILE_TRACKING_DIR: "/mnt/nfs/v4/app-data/tracking/"

@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  # this replicas value is default
+  # modify it according to your case
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+        containers:
+        - name: postgres
+          image: registry.wtransnet.local:5000/sistemas/postgres:latest
+          imagePullPolicy: Always
+          #resources:
+          #  requests:
+          #   cpu: 100m
+          #   memory: 100Mi
+          ports:
+          - containerPort: 5432
+            name : serviceport
+          volumeMounts:
+          - mountPath: /etc/postgresql
+            name: pvc-postgres-etc
+          - mountPath: /u01/postgres/pgdata
+            name: pvc-postgres-pgdata
+          - mountPath: /var/lib/postgresql
+            name: pvc-postgres-lib
+          - mountPath: /mnt/postgres/pgdump
+            name: pvc-postgres-dump
+          - mountPath: /mnt/postgres/install
+            name: postgres-configmap
+        volumes:
+        - name: pvc-postgres-etc
+          persistentVolumeClaim:
+           claimName:  pvc-postgres-etc
+        - name: pvc-postgres-pgdata
+          persistentVolumeClaim:
+           claimName:  pvc-postgres-pgdata
+        - name: pvc-postgres-lib
+          persistentVolumeClaim:
+           claimName: pvc-postgres-lib
+        - name: pvc-postgres-dump
+          persistentVolumeClaim:
+           claimName: pvc-postgres-dump
+        - name: postgres-configmap
+          configMap:
+            name: postgres-configmap
+        imagePullSecrets:
+        - name: registrypullsecret

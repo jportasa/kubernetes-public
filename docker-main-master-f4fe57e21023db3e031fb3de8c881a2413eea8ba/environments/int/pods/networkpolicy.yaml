@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: catalogue-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+      name: database
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: backend
+      ports:
+        - protocol: TCP 
+          port: 5432
